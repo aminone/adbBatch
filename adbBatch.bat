@@ -18,6 +18,19 @@
 CLS
 
 :START
+IF EXIST %CD%\pathOfADB.txt (
+set /p adbPath=<%CD%\pathOfADB.txt
+GOTO :CHECKPATH
+) ELSE (
+ECHO NA >%CD%\pathOfADB.txt
+GOTO :START
+)
+
+:: ____________________________________________________________________	
+:CHECKPATH
+IF %adbPath%==NA (
+GOTO :SECTION81
+)
 
 :: ____________________________________________________________________	
 :MENU
@@ -31,8 +44,8 @@ ECHO 		3.  DEVICES LIST
 ECHO 		4.  INSTALL AN APK...
 ECHO 		5.  SCREEN INFORMATION...
 ECHO 		6.  ADB SHELL
-ECHO 		7.  ADB HELP
-ECHO 		8.  ADB VERSION
+ECHO 		7.  ADB VERSION
+ECHO 		8.  ADB PATH...
 ECHO 		9.  EXIT
 ECHO 		__________________________________________
 ECHO 		_________________BY_AMIX__________________
@@ -57,7 +70,7 @@ goto MENU
 :: ____________________________________________________________________	
 :SECTION1
 CLS
-"D:\adt-bundle\sdk\platform-tools\adb.exe" kill-server
+"%adbPath%" kill-server
 ECHO PRESS ANY KEY TO CONTINUE
 PAUSE>NUL
 goto MENU
@@ -65,7 +78,7 @@ goto MENU
 :: ____________________________________________________________________	
 :SECTION2
 CLS
-"D:\adt-bundle\sdk\platform-tools\adb.exe" start-server
+"%adbPath%" start-server
 ECHO "PRESS ANY KEY TO <EXIT>"
 PAUSE>NUL
 EXIT
@@ -73,7 +86,7 @@ EXIT
 :: ____________________________________________________________________	
 :SECTION3
 CLS
-"D:\adt-bundle\sdk\platform-tools\adb.exe" devices
+"%adbPath%" devices
 ECHO PRESS ANY KEY TO CONTINUE
 PAUSE>NUL
 goto MENU
@@ -101,7 +114,7 @@ goto SECTION4
 CLS
 ECHO INSTALL TO THE ONLY RUNNING EMULATOR
 set /p apkPath1=Enter your APK path : 
-"D:\adt-bundle\sdk\platform-tools\adb.exe" -e install %apkPath1%
+"%adbPath%" -e install %apkPath1%
 ECHO PRESS ANY KEY TO CONTINUE
 PAUSE>NUL
 goto MENU
@@ -111,7 +124,7 @@ goto MENU
 CLS
 ECHO INSTALL TO THE ONLY CONNECTED USB DEVICE
 set /p apkPath2=Enter your APK path : 
-"D:\adt-bundle\sdk\platform-tools\adb.exe" -d install %apkPath2%
+"%adbPath%" -d install %apkPath2%
 ECHO PRESS ANY KEY TO CONTINUE
 PAUSE>NUL
 goto MENU
@@ -138,7 +151,7 @@ goto SECTION5
 :SECTION51
 CLS
 ECHO Getting Size... 
-"D:\adt-bundle\sdk\platform-tools\adb.exe" shell wm size
+"%adbPath%" shell wm size
 ECHO PRESS ANY KEY TO GO BACK
 PAUSE>NUL
 goto SECTION5
@@ -147,7 +160,7 @@ goto SECTION5
 :SECTION52
 CLS
 ECHO Getting Density...
-"D:\adt-bundle\sdk\platform-tools\adb.exe" shell getprop ro.sf.lcd_density
+"%adbPath%" shell getprop ro.sf.lcd_density
 ECHO PRESS ANY KEY TO GO BACK
 PAUSE>NUL
 goto SECTION5
@@ -155,7 +168,7 @@ goto SECTION5
 :: ____________________________________________________________________	
 :SECTION6
 CLS
-"D:\adt-bundle\sdk\platform-tools\adb.exe" shell
+"%adbPath%" shell
 ECHO PRESS ANY KEY TO CONTINUE
 PAUSE>NUL
 goto MENU
@@ -163,7 +176,7 @@ goto MENU
 :: ____________________________________________________________________	
 :SECTION7
 CLS
-"D:\adt-bundle\sdk\platform-tools\adb.exe" help
+"%adbPath%" version
 ECHO PRESS ANY KEY TO CONTINUE
 PAUSE>NUL
 goto MENU
@@ -171,10 +184,39 @@ goto MENU
 :: ____________________________________________________________________	
 :SECTION8
 CLS
-"D:\adt-bundle\sdk\platform-tools\adb.exe" version
-ECHO PRESS ANY KEY TO CONTINUE
+ECHO 		=-=-=-=-=-=-= SELECT COMMAND =-=-=-=-=-=-=-=-=
+ECHO 		----------------------------------------------
+ECHO 		1.  SET ADB PATH
+ECHO 		2.  SHOW ADB PATH
+ECHO 		3.  BACK
+ECHO 		______________________________________________
+ECHO 		=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=
+
+set /p adbPathChoice=Select one: 
+
+if /I %adbPathChoice%==1 goto :SECTION81
+if /I %adbPathChoice%==2 goto :SECTION82
+if /I %adbPathChoice%==3 goto :START
+ECHO "%adbPathChoice%" is not a valid option. Please try again. 
+ECHO
+goto SECTION8
+
+:: ____________________________________________________________________	
+:SECTION81
+CLS
+set /p adbPath=Enter the path of your ADB: 
+ECHO %adbPath% > "%CD%"\pathOfADB.txt
+ECHO PRESS ANY KEY TO GO BACK
 PAUSE>NUL
-goto MENU
+goto SECTION8
+
+:: ____________________________________________________________________	
+:SECTION82
+CLS
+ECHO %adbPath%
+ECHO PRESS ANY KEY TO GO BACK
+PAUSE>NUL
+goto SECTION8
 
 :: ____________________________________________________________________	
 :QUIT
