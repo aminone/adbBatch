@@ -38,16 +38,17 @@ CLS
 
 ECHO 		=-=-=-=-=-=-= SELECT COMMAND =-=-=-=-=-=-=
 ECHO 		------------------------------------------
-ECHO 		1.  KILL SERVER
-ECHO 		2.  START SERVER
-ECHO 		3.  DEVICES LIST
-ECHO 		4.  DEVICE INFORMATIONS
-ECHO 		5.  INSTALL AN APK...
-ECHO 		6.  SCREEN INFORMATIONS...
-ECHO 		7.  ADB SHELL
-ECHO 		8.  ADB VERSION
-ECHO 		9.  ADB PATH...
-ECHO 		0.  EXIT
+ECHO 		 1._____Kill Server_______________________
+ECHO 		 2._____Start Server______________________
+ECHO 		 3._____Devices List______________________
+ECHO 		 4._____Device Informations_______________
+ECHO 		 5._____Wireless Debugging....____________
+ECHO 		 6._____Install an APK..._________________
+ECHO 		 7._____Screen Informations...____________
+ECHO 		 8._____ADB Shell_________________________
+ECHO 		 9._____ADB Version_______________________
+ECHO 		10._____ADB Path..._______________________
+ECHO 		 0._____EXIT______________________________
 ECHO 		__________________________________________
 ECHO 		_________________BY_AMIX__________________
 ECHO 		=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=
@@ -63,6 +64,7 @@ if /I %choice%==6 goto :SECTION6
 if /I %choice%==7 goto :SECTION7
 if /I %choice%==8 goto :SECTION8
 if /I %choice%==9 goto :SECTION9
+if /I %choice%==10 goto :SECTION10
 if /I %choice%==0 goto :QUIT
 ECHO "%choice%" is not a valid option. Please try again. 
 ECHO
@@ -96,9 +98,11 @@ goto MENU
 :SECTION4
 CLS
 ECHO Information About your
-"%adbPath%" shell getprop ro.product.model"
+"%adbPath%" shell getprop ro.product.model
 ECHO ----------------------------------------------
+ECHO.
 "%adbPath%" shell cat /system/build.prop | find "product"
+ECHO.
 ECHO "PRESS ANY KEY TO GO BACK"
 PAUSE>NUL
 goto MENU
@@ -108,25 +112,29 @@ goto MENU
 CLS
 ECHO 		=-=-=-=-=-=-= SELECT COMMAND =-=-=-=-=-=-=-=-=
 ECHO 		----------------------------------------------
-ECHO 		1.  INSTALL TO THE +ONLY+ RUNNING EMULATOR
-ECHO 		2.  INSTALL TO THE +ONLY+ CONNECTED USB DEVICE
+ECHO 		1.  CONNECT A DEVICE...
+ECHO 		2.  DISCONNECT DEVICE(S)...
 ECHO 		3.  BACK
 ECHO 		______________________________________________
 ECHO 		=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=
-set /p apkChoice=Select one: 
-if /I %apkChoice%==1 goto :SECTION51
-if /I %apkChoice%==2 goto :SECTION52
-if /I %apkChoice%==3 goto :MENU
-ECHO "%apkChoice%" is not a valid option. Please try again. 
+
+set /p choice=Select one: 
+
+if /I %choice%==1 goto :SECTION51
+if /I %choice%==2 goto :SECTION52
+if /I %choice%==3 goto :START
+ECHO "%choice%" is not a valid option. Please try again. 
 ECHO
-goto SECTION5 
+goto SECTION5
 
 :: ____________________________________________________________________	
 :SECTION51
 CLS
-ECHO INSTALL TO THE ONLY RUNNING EMULATOR
-set /p apkPath1=Enter your APK path : 
-"%adbPath%" -e install %apkPath1%
+ECHO MAKE SURE YOUR DEVICE IS IN THE SAME RANGE OF YOUR PC NETWORK.
+ECHO ATTACH USB CABLE.
+set /p ipaddress=Enter your device IP address : 
+"%adbPath%" tcpip 5555 & "%adbPath%" connect %ipaddress%:5555
+ECHO NOW YOU CAN DETACH THE USB CABLE.
 ECHO PRESS ANY KEY TO CONTINUE
 PAUSE>NUL
 goto MENU
@@ -134,9 +142,40 @@ goto MENU
 :: ____________________________________________________________________	
 :SECTION52
 CLS
-ECHO INSTALL TO THE ONLY CONNECTED USB DEVICE
-set /p apkPath2=Enter your APK path : 
-"%adbPath%" -d install %apkPath2%
+ECHO 		=-=-=-=-=-=-= SELECT COMMAND =-=-=-=-=-=-=-=-=
+ECHO 		----------------------------------------------
+ECHO 		1.  DISCONNECT SPECIFIC DEVICE...
+ECHO 		2.  DISCONNECT ALL DEVICES
+ECHO 		3.  BACK
+ECHO 		______________________________________________
+ECHO 		=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=
+
+set /p choice=Select one: 
+
+if /I %choice%==1 goto :SECTION521
+if /I %choice%==2 goto :SECTION522
+if /I %choice%==3 goto :SECTION5
+ECHO "%choice%" is not a valid option. Please try again. 
+ECHO
+goto SECTION52
+
+:: ____________________________________________________________________	
+:SECTION521
+CLS
+
+set /p ipaddress=Enter your device IP address : 
+"%adbPath%" disconnect %ipaddress%:5555
+
+ECHO PRESS ANY KEY TO CONTINUE
+PAUSE>NUL
+goto MENU
+
+:: ____________________________________________________________________	
+:SECTION522
+CLS
+
+"%adbPath%" disconnect
+
 ECHO PRESS ANY KEY TO CONTINUE
 PAUSE>NUL
 goto MENU
@@ -146,39 +185,77 @@ goto MENU
 CLS
 ECHO 		=-=-=-=-=-=-= SELECT COMMAND =-=-=-=-=-=-=-=-=
 ECHO 		----------------------------------------------
+ECHO 		1.  INSTALL TO THE +ONLY+ RUNNING EMULATOR
+ECHO 		2.  INSTALL TO THE +ONLY+ CONNECTED USB DEVICE
+ECHO 		3.  BACK
+ECHO 		______________________________________________
+ECHO 		=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=
+set /p apkChoice=Select one: 
+if /I %apkChoice%==1 goto :SECTION61
+if /I %apkChoice%==2 goto :SECTION62
+if /I %apkChoice%==3 goto :MENU
+ECHO "%apkChoice%" is not a valid option. Please try again. 
+ECHO
+goto SECTION5 
+
+:: ____________________________________________________________________	
+:SECTION61
+CLS
+ECHO INSTALL TO THE ONLY RUNNING EMULATOR
+set /p apkPath1=Enter your APK path : 
+"%adbPath%" -e install %apkPath1%
+ECHO PRESS ANY KEY TO CONTINUE
+PAUSE>NUL
+goto MENU
+
+:: ____________________________________________________________________	
+:SECTION62
+CLS
+ECHO INSTALL TO THE ONLY CONNECTED USB DEVICE
+set /p apkPath2=Enter your APK path : 
+"%adbPath%" -d install %apkPath2%
+ECHO PRESS ANY KEY TO CONTINUE
+PAUSE>NUL
+goto MENU
+
+:: ____________________________________________________________________	
+:SECTION7
+CLS
+ECHO 		=-=-=-=-=-=-= SELECT COMMAND =-=-=-=-=-=-=-=-=
+ECHO 		----------------------------------------------
 ECHO 		1.  GET SCREEN SIZE
 ECHO 		2.  GET SCREEN DENSITY
 ECHO 		3.  BACK
 ECHO 		______________________________________________
 ECHO 		=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=
 set /p screenChoice=Select one: 
-if /I %screenChoice%==1 goto :SECTION51
-if /I %screenChoice%==2 goto :SECTION52
+if /I %screenChoice%==1 goto :SECTION71
+if /I %screenChoice%==2 goto :SECTION72
 if /I %screenChoice%==3 goto :MENU
 ECHO "%screenChoice%" is not a valid option. Please try again. 
 ECHO
-goto SECTION6 
+goto SECTION7 
 
 :: ____________________________________________________________________	
-:SECTION61
+:SECTION71
 CLS
 ECHO Getting Size... 
 "%adbPath%" shell wm size
 ECHO PRESS ANY KEY TO GO BACK
 PAUSE>NUL
-goto SECTION6
+goto SECTION7
 
 :: ____________________________________________________________________	
-:SECTION62
+:SECTION72
 CLS
 ECHO Getting Density...
 "%adbPath%" shell getprop ro.sf.lcd_density
 ECHO PRESS ANY KEY TO GO BACK
 PAUSE>NUL
-goto SECTION6
+goto SECTION7
 
 :: ____________________________________________________________________	
-:SECTION7
+:SECTION8
 CLS
 "%adbPath%" shell
 ECHO PRESS ANY KEY TO CONTINUE
@@ -186,7 +263,7 @@ PAUSE>NUL
 goto MENU
 
 :: ____________________________________________________________________	
-:SECTION8
+:SECTION9
 CLS
 "%adbPath%" version
 ECHO PRESS ANY KEY TO CONTINUE
@@ -194,7 +271,7 @@ PAUSE>NUL
 goto MENU
 
 :: ____________________________________________________________________	
-:SECTION9
+:SECTION10
 CLS
 ECHO 		=-=-=-=-=-=-= SELECT COMMAND =-=-=-=-=-=-=-=-=
 ECHO 		----------------------------------------------
@@ -206,15 +283,15 @@ ECHO 		=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=
 
 set /p adbPathChoice=Select one: 
 
-if /I %adbPathChoice%==1 goto :SECTION81
-if /I %adbPathChoice%==2 goto :SECTION82
+if /I %adbPathChoice%==1 goto :SECTION101
+if /I %adbPathChoice%==2 goto :SECTION102
 if /I %adbPathChoice%==3 goto :START
 ECHO "%adbPathChoice%" is not a valid option. Please try again. 
 ECHO
-goto SECTION9
+goto SECTION10
 
 :: ____________________________________________________________________	
-:SECTION91
+:SECTION101
 CLS
 set /p adbPath=Enter the path of your ADB: 
 ECHO %adbPath% > "%CD%"\pathOfADB.txt
@@ -223,7 +300,7 @@ PAUSE>NUL
 goto SECTION9
 
 :: ____________________________________________________________________	
-:SECTION92
+:SECTION102
 CLS
 ECHO Your current adb path:
 ECHO %adbPath%
