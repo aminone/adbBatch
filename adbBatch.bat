@@ -29,7 +29,7 @@ GOTO :START
 :: ____________________________________________________________________	
 :CHECKPATH
 IF %adbPath%==NA (
-GOTO :SECTION91
+GOTO :SECTION101
 )
 
 :: ____________________________________________________________________	
@@ -42,7 +42,7 @@ ECHO 		 1._____Kill Server_______________________
 ECHO 		 2._____Start Server______________________
 ECHO 		 3._____Devices List______________________
 ECHO 		 4._____Device Informations_______________
-ECHO 		 5._____Wireless Debugging....____________
+ECHO 		 5._____Wireless Debugging..._____________
 ECHO 		 6._____Install an APK..._________________
 ECHO 		 7._____Screen Informations...____________
 ECHO 		 8._____ADB Shell_________________________
@@ -297,7 +297,7 @@ set /p adbPath=Enter the path of your ADB:
 ECHO %adbPath% > "%CD%"\pathOfADB.txt
 ECHO PRESS ANY KEY TO GO BACK
 PAUSE>NUL
-goto SECTION9
+goto SECTION10
 
 :: ____________________________________________________________________	
 :SECTION102
@@ -306,7 +306,7 @@ ECHO Your current adb path:
 ECHO %adbPath%
 ECHO PRESS ANY KEY TO GO BACK
 PAUSE>NUL
-goto SECTION9
+goto SECTION10
 
 :: ____________________________________________________________________	
 :QUIT
