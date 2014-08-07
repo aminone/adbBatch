@@ -16,6 +16,7 @@
 
 @ECHO OFF
 CLS
+COLOR 3E
 
 :START
 IF EXIST %CD%\pathOfADB.txt (
@@ -132,9 +133,13 @@ goto SECTION5
 CLS
 ECHO MAKE SURE YOUR DEVICE IS IN THE SAME RANGE OF YOUR PC NETWORK.
 ECHO ATTACH USB CABLE.
+
 set /p ipaddress=Enter your device IP address : 
 "%adbPath%" tcpip 5555 & "%adbPath%" connect %ipaddress%:5555
+
+ECHO ...
 ECHO NOW YOU CAN DETACH THE USB CABLE.
+
 ECHO PRESS ANY KEY TO CONTINUE
 PAUSE>NUL
 goto MENU
@@ -297,7 +302,7 @@ set /p adbPath=Enter the path of your ADB:
 ECHO %adbPath% > "%CD%"\pathOfADB.txt
 ECHO PRESS ANY KEY TO GO BACK
 PAUSE>NUL
-goto SECTION10
+goto MENUE
 
 :: ____________________________________________________________________	
 :SECTION102
